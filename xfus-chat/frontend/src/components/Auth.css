@@ -1,6 +1,7 @@
 .auth-container {
   min-height: 100vh;
   display: flex;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
   padding: 20px;
@@ -8,6 +9,65 @@
     rgba(102, 126, 234, 0.1) 0%,
     rgba(118, 75, 162, 0.1) 50%,
     rgba(240, 147, 251, 0.1) 100%);
+  position: relative;
+}
+
+.auth-controls {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.theme-toggle-btn {
+  background: rgba(255, 255, 255, 0.9);
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle-btn {
+  background: rgba(40, 40, 55, 0.9);
+  border-color: rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.theme-toggle-btn:hover {
+  transform: scale(1.05);
+  border-color: #667eea;
+}
+
+.language-select-auth {
+  padding: 8px 12px;
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  background: rgba(255, 255, 255, 0.9);
+  color: #333;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+[data-theme="dark"] .language-select-auth {
+  background: rgba(40, 40, 55, 0.9);
+  border-color: rgba(102, 126, 234, 0.3);
+  color: #fff;
+}
+
+.language-select-auth:focus {
+  outline: none;
+  border-color: #667eea;
+}
+
+[data-theme="dark"] .language-select-auth:focus {
+  border-color: #a8b4f0;
 }
 
 [data-theme="dark"] .auth-container {

@@ -145,4 +145,59 @@ router.get('/friends', auth, async (req, res) => {
   }
 });
 
+// Get current user profile
+router.get('/profile', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.userId)
+      .select('username email phone displayName avatar');
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    res.json(user);
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Update current user profile
+router.put('/profile', auth, async (req, res) => {
+  try {
+    const { displayName, avatar } = req.body;
+    
+    const user = await User.findById(req.userId);
+    
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+    
+    // Only allow updating displayName and avatar
+    if (displayName !== undefined) {
+      user.displayName = displayName.trim();
+    }
+    
+    if (avatar !== undefined) {
+      user.avatar = avatar;
+    }
+    
+    await user.save();
+    
+    res.json({ 
+      message: 'Profile updated successfully',
+      user: {
+        username: user.username,
+        email: user.email,
+        phone: user.phone,
+        displayName: user.displayName,
+        avatar: user.avatar
+      }
+    });
+  } catch (error) {
+    console.error('Update profile error:', error);
+    res.status(500).json({ message: 'Server error while updating profile' });
+  }
+});
+
 module.exports = router;

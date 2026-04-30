@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     unique: true,
     trim: true,
     minlength: 3,
-    maxlength: 30
+    maxlength: 30,
+    index: true
   },
   email: {
     type: String,
@@ -15,13 +16,15 @@ const userSchema = new mongoose.Schema({
     unique: true,
     lowercase: true,
     trim: true,
-    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email']
+    match: [/^\S+@\S+\.\S+$/, 'Please enter a valid email'],
+    index: true
   },
   phone: {
     type: String,
     required: true,
     unique: true,
-    trim: true
+    trim: true,
+    index: true
   },
   passwordHash: {
     type: String,
@@ -56,11 +59,5 @@ const userSchema = new mongoose.Schema({
 }, {
   timestamps: true
 });
-
-// Indexes for fast queries
-userSchema.index({ username: 1 });
-userSchema.index({ email: 1 });
-userSchema.index({ phone: 1 });
-userSchema.index({ friends: 1 });
 
 module.exports = mongoose.model('User', userSchema);

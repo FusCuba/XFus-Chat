@@ -58,6 +58,18 @@ export default {
       'lightTheme': 'Light Theme',
       'language': 'Language',
       
+      // Profile
+      'profile': 'Profile',
+      'editProfile': 'Edit Profile',
+      'saveChanges': 'Save Changes',
+      'changeAvatar': 'Change Avatar',
+      'avatarUrl': 'Avatar URL',
+      
+      // Search
+      'search': 'Search',
+      'noResults': 'No results found',
+      'writeMessage': 'Write Message',
+      
       // Status
       'sent': 'Sent',
       'delivered': 'Delivered',
@@ -123,6 +135,18 @@ export default {
       'darkTheme': 'Тёмная тема',
       'lightTheme': 'Светлая тема',
       'language': 'Язык',
+      
+      // Profile
+      'profile': 'Профиль',
+      'editProfile': 'Редактировать профиль',
+      'saveChanges': 'Сохранить изменения',
+      'changeAvatar': 'Изменить аватар',
+      'avatarUrl': 'URL аватара',
+      
+      // Search
+      'search': 'Поиск',
+      'noResults': 'Ничего не найдено',
+      'writeMessage': 'Написать сообщение',
       
       // Status
       'sent': 'Отправлено',
