@@ -1,40 +1,36 @@
 import { useState, useEffect, useRef } from 'react';
+import { useTranslation } from 'react-i18next';
+import './ChatWindow.css';
 
 const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState('');
-  const [showDeleteModal, setShowDeleteModal] = useState(null);
+  const [deleteModal, setDeleteModal] = useState({ show: false, messageId: null });
   const messagesEndRef = useRef(null);
-  const chatContainerRef = useRef(null);
+  const messagesContainerRef = useRef(null);
 
   useEffect(() => {
     loadMessages();
-    
     if (socket) {
-      socket.on(`messages_${chat.friend.id}`, handleIncomingMessage);
+      socket.on(`messages_${chat.friend.id}`, handleNewMessage);
       socket.on('message_deleted', handleMessageDeleted);
-    }
-
-    return () => {
-      if (socket) {
-        socket.off(`messages_${chat.friend.id}`, handleIncomingMessage);
+      return () => {
+        socket.off(`messages_${chat.friend.id}`, handleNewMessage);
         socket.off('message_deleted', handleMessageDeleted);
-      }
-    };
+      };
+    }
   }, [chat, socket]);
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    if (chatContainerRef.current && socket) {
+    if (messagesContainerRef.current && socket) {
       const observer = new IntersectionObserver(
         (entries) => {
           entries.forEach((entry) => {
             if (entry.isIntersecting) {
               const messageId = entry.target.dataset.messageId;
-              if (messageId && !messages.find(m => m._id === messageId)?.read) {
+              const message = messages.find((m) => m._id === messageId);
+              if (message && !message.read && message.sender !== userId) {
                 socket.emit('mark_read', { messageId, senderId: chat.friend.id });
               }
             }
@@ -42,29 +38,21 @@ const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
         },
         { threshold: 0.5 }
       );
-
-      document.querySelectorAll('.message-item').forEach((el) => {
-        observer.observe(el);
-      });
-
+      document.querySelectorAll('.message-item').forEach((el) => observer.observe(el));
       return () => observer.disconnect();
     }
-  }, [messages, chatContainerRef, socket]);
+  }, [messages]);
 
   const loadMessages = async () => {
     try {
       const response = await fetch(`/api/messages/${chat.friend.id}`, {
-        headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`
-        }
+        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
       });
-
       if (response.ok) {
         const data = await response.json();
         setMessages(data);
-        
         setTimeout(() => {
-          const unreadIds = data.filter(m => !m.read && m.sender !== userId).map(m => m._id);
+          const unreadIds = data.filter((m) => !m.read && m.sender !== userId).map((m) => m._id);
           if (unreadIds.length > 0 && socket) {
             socket.emit('mark_read_bulk', { senderId: chat.friend.id, messageIds: unreadIds });
           }
@@ -75,32 +63,27 @@ const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
     }
   };
 
-  const handleIncomingMessage = (message) => {
-    setMessages(prev => [...prev, { ...message, read: false }]);
+  const handleNewMessage = (message) => {
+    setMessages((prev) => [...prev, { ...message, read: false }]);
   };
 
   const handleMessageDeleted = ({ messageId, deletedForEveryone }) => {
     if (deletedForEveryone) {
-      setMessages(prev => prev.filter(m => m._id !== messageId));
+      setMessages((prev) => prev.filter((m) => m._id !== messageId));
     } else {
-      setMessages(prev => prev.map(m => 
-        m._id === messageId ? { ...m, hiddenForMe: true } : m
-      ));
+      setMessages((prev) =>
+        prev.map((m) => (m._id === messageId ? { ...m, hiddenForMe: true } : m))
+      );
     }
   };
 
   const sendMessage = async (e) => {
     e.preventDefault();
     if (!newMessage.trim() || !socket) return;
-
-    const messageData = {
-      receiverId: chat.friend.id,
-      text: newMessage.trim()
-    };
-
+    const messageData = { receiverId: chat.friend.id, text: newMessage.trim() };
     socket.emit('send_message', messageData);
     setNewMessage('');
-    scrollToBottom();
+    setTimeout(scrollToBottom, 50);
   };
 
   const scrollToBottom = () => {
@@ -109,52 +92,44 @@ const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
 
   const handleDeleteClick = (messageId, e) => {
     e.stopPropagation();
-    setShowDeleteModal(messageId);
+    setDeleteModal({ show: true, messageId });
   };
 
   const handleDelete = async (deleteType) => {
-    if (!showDeleteModal || !socket) return;
-
+    if (!deleteModal.messageId || !socket) return;
     try {
-      const response = await fetch(`/api/messages/${showDeleteModal}`, {
+      const response = await fetch(`/api/messages/${deleteModal.messageId}`, {
         method: 'DELETE',
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          'Content-Type': 'application/json'
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ deleteType })
+        body: JSON.stringify({ deleteType }),
       });
-
       if (response.ok) {
         if (deleteType === 'everyone') {
-          socket.emit('message_deleted_for_all', { messageId: showDeleteModal, receiverId: chat.friend.id });
+          socket.emit('message_deleted_for_all', {
+            messageId: deleteModal.messageId,
+            receiverId: chat.friend.id,
+          });
         }
-        setMessages(prev => prev.filter(m => m._id !== showDeleteModal));
+        setMessages((prev) => prev.filter((m) => m._id !== deleteModal.messageId));
       }
     } catch (error) {
       console.error('Failed to delete message:', error);
     }
-
-    setShowDeleteModal(null);
+    setDeleteModal({ show: false, messageId: null });
   };
 
-  const formatTime = (timestamp) => {
-    return new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  };
+  const formatTime = (timestamp) =>
+    new Date(timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
   const renderStatus = (message) => {
     if (message.deletedForEveryone) return <span className="message-deleted">{t('messageDeleted')}</span>;
-    if (message.hiddenForMe) return null;
-
-    if (message.sender !== userId) return null;
-
-    if (message.read) {
-      return <span className="message-status read">✓✓</span>;
-    } else if (message.delivered) {
-      return <span className="message-status delivered">✓✓</span>;
-    } else {
-      return <span className="message-status sent">✓</span>;
-    }
+    if (message.hiddenForMe || message.sender !== userId) return null;
+    if (message.read) return <span className="message-status read">✓✓</span>;
+    if (message.delivered) return <span className="message-status delivered">✓✓</span>;
+    return <span className="message-status sent">✓</span>;
   };
 
   return (
@@ -166,17 +141,21 @@ const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
           {chat.friend.online ? (
             <span className="online-status">{t('online')}</span>
           ) : (
-            <span className="offline-status">{t('lastSeen')} {formatTime(chat.friend.lastSeen)}</span>
+            <span className="offline-status">
+              {t('lastSeen')} {formatTime(chat.friend.lastSeen)}
+            </span>
           )}
         </div>
       </div>
 
-      <div className="messages-container" ref={chatContainerRef}>
-        {messages.filter(m => !m.hiddenForMe).map((message) => (
+      <div className="messages-container" ref={messagesContainerRef}>
+        {messages.filter((m) => !m.hiddenForMe).map((message) => (
           <div
             key={message._id}
             data-message-id={message._id}
-            className={`message-item ${message.sender === userId ? 'own' : ''} ${message.deletedForEveryone ? 'deleted' : ''}`}
+            className={`message-item ${message.sender === userId ? 'own' : ''} ${
+              message.deletedForEveryone ? 'deleted' : ''
+            }`}
           >
             {!message.deletedForEveryone && !message.hiddenForMe && (
               <button className="delete-btn" onClick={(e) => handleDeleteClick(message._id, e)}>
@@ -206,14 +185,18 @@ const ChatWindow = ({ chat, socket, userId, onBack, t }) => {
         <button type="submit" className="send-btn">➤</button>
       </form>
 
-      {showDeleteModal && (
-        <div className="modal-overlay" onClick={() => setShowDeleteModal(null)}>
+      {deleteModal.show && (
+        <div className="modal-overlay" onClick={() => setDeleteModal({ show: false, messageId: null })}>
           <div className="modal-content" onClick={(e) => e.stopPropagation()}>
             <h3>{t('deleteMessage')}</h3>
             <div className="modal-buttons">
               <button onClick={() => handleDelete('me')}>{t('deleteForMe')}</button>
-              <button onClick={() => handleDelete('everyone')} className="danger">{t('deleteForEveryone')}</button>
-              <button onClick={() => setShowDeleteModal(null)}>{t('cancel')}</button>
+              <button onClick={() => handleDelete('everyone')} className="danger">
+                {t('deleteForEveryone')}
+              </button>
+              <button onClick={() => setDeleteModal({ show: false, messageId: null })}>
+                {t('cancel')}
+              </button>
             </div>
           </div>
         </div>

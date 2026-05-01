@@ -20,8 +20,8 @@
   transition: transform 0.3s ease;
 }
 
-.chat-sidebar.show-search {
-  transform: translateX(-100%);
+.chat-sidebar.show-search .sidebar-header h2 {
+  display: none;
 }
 
 .sidebar-header {
@@ -36,6 +36,7 @@
   font-size: 1.5rem;
   color: var(--text-primary);
   font-weight: 600;
+  margin: 0;
 }
 
 .search-btn {
@@ -50,7 +51,8 @@
 }
 
 .search-btn:hover {
-  background: var(--hover-bg);
+  background: var(--bg-tertiary);
+  color: var(--accent);
 }
 
 .chat-content {
@@ -67,16 +69,20 @@
   justify-content: center;
   align-items: center;
   color: var(--text-secondary);
+  text-align: center;
+  padding: 20px;
 }
 
 .no-chat-icon {
   font-size: 4rem;
   margin-bottom: 20px;
   opacity: 0.5;
+  color: var(--accent);
 }
 
 .no-chat-selected p {
   font-size: 1.2rem;
+  margin: 0;
 }
 
 @media (max-width: 768px) {

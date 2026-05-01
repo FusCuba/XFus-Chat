@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import './UserSearch.css';
 
 const UserSearch = ({ onAddFriend, onClose, t }) => {
   const [searchQuery, setSearchQuery] = useState('');

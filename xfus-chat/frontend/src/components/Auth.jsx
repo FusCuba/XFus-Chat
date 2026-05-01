@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useAuth } from '../context/AuthContext';
+import { useTheme } from '../context/ThemeContext';
 import './Auth.css';
 
 const Auth = ({ onAuthSuccess }) => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { login, register } = useAuth();
+  const { isDarkMode, toggleTheme } = useTheme();
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -27,6 +29,11 @@ const Auth = ({ onAuthSuccess }) => {
       [e.target.name]: e.target.value
     }));
     setError('');
+  };
+
+  const handleLanguageChange = (lng) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem('language', lng);
   };
 
   const handleSubmit = async (e) => {
@@ -74,6 +81,25 @@ const Auth = ({ onAuthSuccess }) => {
 
   return (
     <div className="auth-container">
+      <div className="auth-controls">
+        <button 
+          className="theme-toggle-btn"
+          onClick={toggleTheme}
+          title={isDarkMode ? t('lightTheme') : t('darkTheme')}
+        >
+          {isDarkMode ? '☀️' : '🌙'}
+        </button>
+        
+        <select
+          className="language-select-auth"
+          value={i18n.language}
+          onChange={(e) => handleLanguageChange(e.target.value)}
+        >
+          <option value="en">EN</option>
+          <option value="ru">RU</option>
+        </select>
+      </div>
+      
       <div className="auth-card">
         <div className="auth-header">
           <h1 className="auth-title">XFus Chat</h1>
