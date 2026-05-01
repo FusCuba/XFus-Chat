@@ -20,8 +20,8 @@
   transition: transform 0.3s ease;
 }
 
-.chat-sidebar.show-search {
-  transform: translateX(-100%);
+.chat-sidebar.show-search .sidebar-header h2 {
+  display: none;
 }
 
 .sidebar-header {
@@ -36,6 +36,7 @@
   font-size: 1.5rem;
   color: var(--text-primary);
   font-weight: 600;
+  margin: 0;
 }
 
 .search-btn {
@@ -50,7 +51,7 @@
 }
 
 .search-btn:hover {
-  background: var(--hover-bg);
+  background: var(--bg-tertiary);
 }
 
 .chat-content {

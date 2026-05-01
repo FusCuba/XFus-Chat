@@ -1,25 +1,58 @@
-import { useState, useEffect } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import Chat from './components/Chat';
-import Auth from './components/Auth';
+import Login from './components/Login';
+import Register from './components/Register';
 import './i18n';
+
+const ProtectedRoute = ({ children }) => {
+  const { isAuthenticated, loading } = useAuth();
+
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return children;
+};
 
 const AppContent = () => {
   const { isAuthenticated, loading } = useAuth();
-  const [isAuthReady, setIsAuthReady] = useState(false);
 
-  useEffect(() => {
-    if (!loading) {
-      setIsAuthReady(true);
-    }
-  }, [loading]);
-
-  if (!isAuthReady) {
-    return null; // Show nothing while checking auth status
+  if (loading) {
+    return (
+      <div className="loading-screen">
+        <div className="loading-spinner"></div>
+        <p>Loading...</p>
+      </div>
+    );
   }
 
-  return isAuthenticated ? <Chat /> : <Auth onAuthSuccess={() => {}} />;
+  return (
+    <Routes>
+      <Route path="/login" element={isAuthenticated ? <Navigate to="/chat" replace /> : <Login />} />
+      <Route path="/register" element={isAuthenticated ? <Navigate to="/chat" replace /> : <Register />} />
+      <Route 
+        path="/chat" 
+        element={
+          <ProtectedRoute>
+            <Chat />
+          </ProtectedRoute>
+        } 
+      />
+      <Route path="/" element={<Navigate to={isAuthenticated ? "/chat" : "/login"} replace />} />
+      <Route path="*" element={<Navigate to={isAuthenticated ? "/chat" : "/login"} replace />} />
+    </Routes>
+  );
 };
 
 const App = () => {
