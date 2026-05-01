@@ -2,27 +2,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  background: var(--chat-bg, #f5f5f5);
-}
-
-.chat-window.dark {
-  --chat-bg: #1e1e1e;
-  --message-sent-bg: #0088cc;
-  --message-received-bg: #2b2b2b;
-  --text-primary: #ffffff;
-  --text-secondary: #aaaaaa;
-  --input-bg: #2b2b2b;
-  --border-color: #3a3a3a;
-}
-
-.chat-window.light {
-  --chat-bg: #f5f5f5;
-  --message-sent-bg: #0088cc;
-  --message-received-bg: #ffffff;
-  --text-primary: #000000;
-  --text-secondary: #666666;
-  --input-bg: #ffffff;
-  --border-color: #e0e0e0;
+  background: var(--bg-primary);
 }
 
 .messages-container {
@@ -47,17 +27,18 @@
 
 .message.sent {
   align-self: flex-end;
-  background: var(--message-sent-bg);
+  background: var(--message-sent);
   color: white;
   border-bottom-right-radius: 4px;
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .message.received {
   align-self: flex-start;
-  background: var(--message-received-bg);
+  background: var(--message-received);
   color: var(--text-primary);
   border-bottom-left-radius: 4px;
-  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
 }
 
 .message-text {
@@ -104,7 +85,7 @@
   position: absolute;
   top: -8px;
   right: -8px;
-  background: #ff4444;
+  background: var(--danger);
   color: white;
   border: none;
   border-radius: 50%;
@@ -126,7 +107,7 @@
 .input-container {
   display: flex;
   padding: 15px 20px;
-  background: var(--input-bg);
+  background: var(--bg-secondary);
   border-top: 1px solid var(--border-color);
   gap: 10px;
 }
@@ -134,20 +115,21 @@
 .message-input {
   flex: 1;
   padding: 12px 18px;
-  border: 1px solid var(--border-color);
+  border: 2px solid var(--border-color);
   border-radius: 24px;
   outline: none;
   font-size: 15px;
-  background: var(--input-bg);
+  background: var(--bg-input);
   color: var(--text-primary);
+  transition: border-color 0.2s;
 }
 
 .message-input:focus {
-  border-color: #0088cc;
+  border-color: var(--accent);
 }
 
 .send-button {
-  background: #0088cc;
+  background: linear-gradient(135deg, var(--accent) 0%, #a29bfe 100%);
   color: white;
   border: none;
   border-radius: 50%;
@@ -158,11 +140,13 @@
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  transition: transform 0.2s;
+  transition: transform 0.2s, box-shadow 0.2s;
+  box-shadow: 0 2px 8px var(--accent-glow);
 }
 
 .send-button:hover {
   transform: scale(1.05);
+  box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .send-button:disabled {
@@ -185,6 +169,7 @@
   font-size: 64px;
   margin-bottom: 20px;
   opacity: 0.5;
+  color: var(--accent);
 }
 
 .no-chat-selected-text {
@@ -206,11 +191,12 @@
 }
 
 .delete-modal {
-  background: var(--input-bg);
+  background: var(--bg-secondary);
   padding: 24px;
   border-radius: 16px;
   min-width: 300px;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: var(--shadow);
+  border: 1px solid var(--border-color);
 }
 
 .delete-modal-title {
@@ -232,16 +218,16 @@
   border-radius: 8px;
   font-size: 15px;
   cursor: pointer;
-  transition: background 0.2s;
+  transition: opacity 0.2s, transform 0.2s;
 }
 
 .delete-modal-btn.delete-for-me {
-  background: #e0e0e0;
-  color: #333;
+  background: var(--bg-tertiary);
+  color: var(--text-primary);
 }
 
 .delete-modal-btn.delete-for-all {
-  background: #ff4444;
+  background: var(--danger);
   color: white;
 }
 
@@ -253,4 +239,23 @@
 
 .delete-modal-btn:hover {
   opacity: 0.9;
+  transform: translateY(-1px);
+}
+
+/* Scrollbar styling */
+.messages-container::-webkit-scrollbar {
+  width: 6px;
+}
+
+.messages-container::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+.messages-container::-webkit-scrollbar-thumb {
+  background: var(--scrollbar-thumb);
+  border-radius: 3px;
+}
+
+.messages-container::-webkit-scrollbar-thumb:hover {
+  background: var(--text-secondary);
 }

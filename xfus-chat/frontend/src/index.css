@@ -4,36 +4,47 @@
   box-sizing: border-box;
 }
 
-:root {
-  --bg-primary: #1a1a2e;
-  --bg-secondary: #16213e;
-  --bg-tertiary: #0f3460;
-  --text-primary: #ffffff;
-  --text-secondary: #b8b8b8;
-  --border-color: rgba(255, 255, 255, 0.1);
-  --accent-color: #00d9ff;
-  --accent-hover: #00b8d9;
-  --error-color: #ff4757;
-  --success-color: #2ed573;
-  --message-sent: #00d9ff;
-  --message-received: #2d2d44;
+/* Dark Theme (Default) */
+:root,
+:root[data-theme="dark"] {
+  --bg-primary: #0b0f1a;
+  --bg-secondary: #1a1f2e;
+  --bg-tertiary: #252a3a;
+  --bg-input: #252a3a;
+  --text-primary: #e0e0e0;
+  --text-secondary: #8890a0;
+  --border-color: #2a2f3f;
+  --accent: #6c5ce7;
+  --accent-hover: #5b4ae0;
+  --accent-glow: rgba(108, 92, 231, 0.4);
+  --danger: #ff6b6b;
+  --success: #2ecc71;
+  --online: #2ecc71;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --message-sent: #6c5ce7;
+  --message-received: #1a1f2e;
   --scrollbar-thumb: rgba(255, 255, 255, 0.2);
   --scrollbar-track: rgba(255, 255, 255, 0.05);
 }
 
+/* Light Theme */
 :root[data-theme="light"] {
-  --bg-primary: #f5f5f5;
+  --bg-primary: #f5f7fb;
   --bg-secondary: #ffffff;
-  --bg-tertiary: #e8e8e8;
+  --bg-tertiary: #eef1f7;
+  --bg-input: #ffffff;
   --text-primary: #1a1a2e;
-  --text-secondary: #666666;
-  --border-color: rgba(0, 0, 0, 0.1);
-  --accent-color: #0099cc;
-  --accent-hover: #0077a3;
-  --error-color: #dc3545;
-  --success-color: #28a745;
-  --message-sent: #0099cc;
-  --message-received: #f0f0f0;
+  --text-secondary: #6c757d;
+  --border-color: #dee2e6;
+  --accent: #5b4ae0;
+  --accent-hover: #4834d4;
+  --accent-glow: rgba(91, 74, 224, 0.25);
+  --danger: #e74c3c;
+  --success: #27ae60;
+  --online: #27ae60;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  --message-sent: #5b4ae0;
+  --message-received: #f8f9fa;
   --scrollbar-thumb: rgba(0, 0, 0, 0.2);
   --scrollbar-track: rgba(0, 0, 0, 0.05);
 }
@@ -67,7 +78,7 @@ body {
   width: 50px;
   height: 50px;
   border: 4px solid var(--border-color);
-  border-top-color: var(--accent-color);
+  border-top-color: var(--accent);
   border-radius: 50%;
   animation: spin 1s linear infinite;
   margin-bottom: 20px;

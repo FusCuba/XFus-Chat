@@ -26,13 +26,14 @@
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
   color: var(--text-primary);
 }
 
 .theme-toggle-btn:hover {
   transform: scale(1.05);
-  border-color: var(--accent-color);
+  border-color: var(--accent);
+  box-shadow: 0 0 12px var(--accent-glow);
 }
 
 .language-select-auth {
@@ -44,12 +45,12 @@
   color: var(--text-primary);
   cursor: pointer;
   transition: all 0.3s ease;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  box-shadow: var(--shadow);
 }
 
 .language-select-auth:focus {
   outline: none;
-  border-color: var(--accent-color);
+  border-color: var(--accent);
 }
 
 .auth-card {
@@ -58,8 +59,7 @@
   padding: 40px;
   background: var(--bg-secondary);
   border-radius: 20px;
-  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15),
-              0 2px 8px rgba(0, 0, 0, 0.05);
+  box-shadow: var(--shadow);
   backdrop-filter: blur(10px);
   border: 1px solid var(--border-color);
 }
@@ -73,10 +73,11 @@
   font-size: 2.5rem;
   font-weight: 700;
   margin: 0 0 10px 0;
-  background: linear-gradient(135deg, var(--accent-color) 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #a29bfe 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
+  filter: drop-shadow(0 0 8px var(--accent-glow));
 }
 
 .auth-subtitle {
@@ -109,14 +110,14 @@
   border-radius: 10px;
   font-size: 1rem;
   transition: all 0.3s ease;
-  background: var(--bg-primary);
+  background: var(--bg-input);
   color: var(--text-primary);
 }
 
 .form-group input:focus {
   outline: none;
-  border-color: var(--accent-color);
-  box-shadow: 0 0 0 3px rgba(0, 217, 255, 0.1);
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-glow);
 }
 
 .password-input-wrapper {
@@ -149,17 +150,17 @@
 
 .error-message {
   padding: 12px;
-  background: rgba(239, 68, 68, 0.1);
-  border: 1px solid rgba(239, 68, 68, 0.3);
+  background: rgba(255, 107, 107, 0.1);
+  border: 1px solid var(--danger);
   border-radius: 8px;
-  color: var(--error-color);
+  color: var(--danger);
   font-size: 0.9rem;
   text-align: center;
 }
 
 .submit-btn {
   padding: 14px;
-  background: linear-gradient(135deg, var(--accent-color) 0%, #764ba2 100%);
+  background: linear-gradient(135deg, var(--accent) 0%, #a29bfe 100%);
   color: white;
   border: none;
   border-radius: 10px;
@@ -168,11 +169,12 @@
   cursor: pointer;
   transition: all 0.3s ease;
   margin-top: 10px;
+  box-shadow: 0 4px 15px var(--accent-glow);
 }
 
 .submit-btn:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 5px 20px rgba(0, 217, 255, 0.4);
+  box-shadow: 0 6px 25px var(--accent-glow);
 }
 
 .submit-btn:disabled {
@@ -196,7 +198,7 @@
 .switch-btn {
   background: none;
   border: none;
-  color: var(--accent-color);
+  color: var(--accent);
   font-weight: 600;
   cursor: pointer;
   font-size: 0.95rem;
